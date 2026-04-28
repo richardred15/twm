@@ -1,10 +1,11 @@
-export { COLORS, BORDERS } from "./constants.js";
 import readline from "readline";
 import keypress from "keypress";
+export { COLORS, BORDERS } from "./constants.js";
 import { WMWindow } from "./classes/WMWindow.js";
 import { ConsoleWindow } from "./classes/ConsoleWindow.js";
 export { ConsoleWindow } from "./classes/ConsoleWindow.js";
 import { ControlStrip } from "./classes/ControlStrip.js";
+export { ControlStrip } from "./classes/ControlStrip.js";
 import { WMElement } from "./classes/WMElement.js";
 
 export class WindowManager extends WMElement {

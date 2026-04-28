@@ -1,9 +1,20 @@
-import { WindowManager, COLORS, BORDERS, ConsoleWindow } from "../index.js";
+// Only import what you need
+// import { WindowManager } from "twm"; //This will do what you need most of the time
+import {
+    WindowManager,
+    COLORS,
+    BORDERS,
+    ConsoleWindow,
+    ControlStrip,
+} from "../index.js";
 
 /**
  * @type {ConsoleWindow}
  */
 let status_console;
+/**
+ * @type {ConsoleWindow}
+ */
 let conf_console;
 /**
  * @type {ConsoleWindow}
@@ -17,11 +28,14 @@ let chat_info_console;
  * @type {ConsoleWindow}
  */
 let cmd_console;
+/**
+ * @type {ControlStrip}
+ */
 let control_strip;
-const FPS = 1;
 
 /**
  * TWM will handle console I/O
+ * @type {WindowManager}
  */
 const window_manager = new WindowManager();
 
@@ -79,6 +93,9 @@ initConsoles();
 window_manager.render();
 
 setTimeout(() => {
+    /**
+     * @type {string}
+     */
     let str = `WM loaded!`;
     status_console.log(str);
 }, 1000);
