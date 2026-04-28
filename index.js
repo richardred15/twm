@@ -43,9 +43,7 @@ export class WindowManager extends WMElement {
             this.render();
         });
 
-        // make `process.stdin` begin emitting "mousepress" (and "keypress") events
         keypress(process.stdin);
-        // you must enable the mouse events before they will begin firing
         keypress.enableMouse(process.stdout);
 
         process.stdin.on("keypress", (...args) => {
