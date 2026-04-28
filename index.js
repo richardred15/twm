@@ -57,6 +57,7 @@ export class WindowManager extends WMElement {
         });
 
         process.stdin.on("mousepress", (info) => {
+            this.fire_event("mousepress", info);
             if (info.scroll == 0) {
                 if (!info.release) {
                     this.click(info.x, info.y);
@@ -162,6 +163,7 @@ export class WindowManager extends WMElement {
                 }
             }
         }
+        this.fire_event("click", x, y);
         this.render();
     }
 
