@@ -53,13 +53,7 @@ const window_manager = new WindowManager();
 
 function setup_consoles() {
     console.clear();
-    status_window = window_manager.createConsole(
-        " Server Status",
-        60,
-        10,
-        0,
-        0,
-    );
+    status_window = window_manager.createConsole("Server Status", 60, 10);
     config_window = window_manager.createConsole("AI Config", 40, 16, 61, 0);
     log_window = window_manager.createConsole(
         COLORS.FgRed + "Chat Log",
@@ -101,7 +95,7 @@ function setup_consoles() {
 }
 
 /**
- * When WM is handling input it will fire an event when the user submits a line of text (a command)
+ * When WM is handling input it will fire an event when the user submits a line of text (a command)(hits enter)
  */
 window_manager
     .on("line", (/** @type {string} */ line) => {

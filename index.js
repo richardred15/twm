@@ -114,7 +114,7 @@ export class WindowManager extends WMElement {
      * @param {number} y
      * @returns
      */
-    createConsole(title = "", width, height, x, y) {
+    createConsole(title = "", width, height, x = 0, y = 0) {
         let console_window = new ConsoleWindow(title, width, height, x, y);
         console_window.parent = this;
         this.windows.push(console_window);
