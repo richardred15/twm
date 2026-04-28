@@ -61,7 +61,13 @@ function setup_consoles() {
         0,
     );
     config_window = window_manager.createConsole("AI Config", 40, 16, 61, 0);
-    log_window = window_manager.createConsole("Chat Log", 60, 29, 0, 11);
+    log_window = window_manager.createConsole(
+        COLORS.FgRed + "Chat Log",
+        60,
+        29,
+        0,
+        11,
+    );
     log_window.z_index = 2;
     chat_info_window = window_manager.createConsole(
         "User Information",
