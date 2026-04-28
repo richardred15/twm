@@ -100,8 +100,9 @@ window_manager
             process.exit(0);
         }
     })
-    .on("close", () => {
-        process.exit(0);
+    .on("exit", () => {
+        console.clear();
+        console.log("Have a great day!");
     });
 
 setup_consoles();

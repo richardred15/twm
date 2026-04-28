@@ -75,8 +75,7 @@ export class WindowManager extends WMElement {
             // disable mouse on exit, so that the state
             // is back to normal for the terminal
             keypress.disableMouse(process.stdout);
-            console.clear();
-            console.log("Have a great day!");
+            this.fire("exit");
         });
     }
 
