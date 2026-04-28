@@ -66,6 +66,10 @@ function initConsoles() {
 window_manager
     .on("line", (/** @type {string} */ line) => {
         log_console.log(line);
+        cmd_console.log("Unknown Command");
+        if (line.startsWith("exit")) {
+            process.exit(0);
+        }
     })
     .on("close", () => {
         process.exit(0);
