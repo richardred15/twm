@@ -8,5 +8,5 @@ Check out the examples for now
 git clone https://github.com/richardred15/twm.git
 cd twm
 npm install
-node ./examples/wm_new.js
+node ./examples/wm_full.js
 ```
