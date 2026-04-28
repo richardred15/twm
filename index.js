@@ -175,12 +175,12 @@ export class WindowManager extends WMElement {
      */
     scroll(direction, x, y) {
         this.windows = this.windows.sort((a, b) => a.z_index - b.z_index);
-        for (let wind of this.windows) {
-            wind.selected = false;
-            if (wind.pos.x + wind.w >= x && wind.pos.x <= x) {
-                if (wind.pos.y + wind.h >= y && wind.pos.y <= y) {
-                    wind.scroll(direction);
-                    wind.selected = true;
+        for (let window of this.windows) {
+            window.selected = false;
+            if (window.pos.x + window.w >= x && window.pos.x <= x) {
+                if (window.pos.y + window.h >= y && window.pos.y <= y) {
+                    window.scroll(direction);
+                    window.selected = true;
                 }
             }
         }
@@ -189,30 +189,31 @@ export class WindowManager extends WMElement {
 
     render() {
         super.render();
-        let pos;
+        let cursor_position;
         if (this.rl) {
             this.rl.pause();
-            pos = this.rl.getCursorPos();
+            cursor_position = this.rl.getCursorPos();
         }
         process.stdout.cursorTo(0, 0);
-        let window_size = process.stdout.getWindowSize();
-        let size = {
-            x: window_size[0],
-            y: window_size[1],
+        let window_size_array = process.stdout.getWindowSize();
+        let window_size = {
+            w: window_size_array[0],
+            h: window_size_array[1],
         };
         this.windows = this.windows.sort((a, b) => a.z_index - b.z_index);
-        for (let l = 0; l < size.y - 1; l++) {
+        for (let l = 0; l < window_size.h - 1; l++) {
             process.stdout.cursorTo(0, l);
-            process.stdout.write(new Array(size.x).fill(" ").join(""));
+            process.stdout.write(new Array(window_size.w).fill(" ").join(""));
             process.stdout.cursorTo(0, l);
             for (let con of this.windows) {
                 con.render(l);
             }
         }
         if (this.rl) {
-            process.stdout.cursorTo(0, size.x);
+            process.stdout.cursorTo(0, window_size.w);
             process.stdout.write("> ");
-            if (pos) process.stdout.cursorTo(pos.cols, size.y);
+            if (cursor_position)
+                process.stdout.cursorTo(cursor_position.cols, window_size.h);
             this.rl.resume();
         }
     }
