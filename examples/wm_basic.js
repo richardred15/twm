@@ -1,10 +1,23 @@
+/*
+Only import what you need
+import { WindowManager } from "twm"; - This will do what you need most of the time
+
+CommonJS:
+
+const {
+    WindowManager,
+    COLORS,
+    BORDERS,
+    ConsoleWindow,
+    ControlStrip,
+} = require("../index.js");
+*/
 import { WindowManager, COLORS, BORDERS, ConsoleWindow } from "../index.js";
 
 /**
  * @type {ConsoleWindow}
  */
 let log_console;
-const FPS = 1;
 
 const window_manager = new WindowManager();
 
@@ -18,8 +31,5 @@ function run_my_stuff() {
 }
 
 setup_consoles();
+window_manager.render();
 run_my_stuff();
-
-setInterval(() => {
-    window_manager.render();
-}, 1000 / FPS);
