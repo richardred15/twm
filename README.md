@@ -27,7 +27,13 @@ const {
     ControlStrip,
 } = require("../index.js");
 */
-import { WindowManager, COLORS, BORDERS, ConsoleWindow } from "../index.js";
+import {
+    WindowManager,
+    COLORS,
+    BORDERS,
+    ConsoleWindow,
+    Color,
+} from "../index.js";
 
 /**
  * @type {ConsoleWindow}
@@ -42,7 +48,7 @@ function setup_consoles() {
 }
 
 function run_my_stuff() {
-    log_window.log("Hello World!");
+    log_window.log(Color.fromHex("#FF8822") + "Hello World!" + COLORS.Reset);
 }
 
 setup_consoles();
