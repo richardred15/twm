@@ -55,7 +55,7 @@ export class Button extends WMElement {
                 out.fill(BORDERS.button.bottom);
                 process.stdout.write(out.join(""));
             } else if (line_index < this.h) {
-                let message = StringUtil.fillLine(
+                let message = StringUtil.fill_line(
                     this.text,
                     this.w - 4,
                     "center",

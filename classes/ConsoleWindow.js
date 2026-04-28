@@ -92,12 +92,12 @@ export class ConsoleWindow extends WMWindow {
                 let messages = this.getVisible();
                 let message = "";
                 if (messages.length + 1 > line_index) {
-                    message = StringUtil.fillLine(
+                    message = StringUtil.fill_line(
                         messages[line_index - 1],
                         this.w - 4,
                     );
                 } else {
-                    message = StringUtil.fillLine(message, this.w - 4);
+                    message = StringUtil.fill_line(message, this.w - 4);
                 }
                 process.stdout.write(` ${message}`);
             }

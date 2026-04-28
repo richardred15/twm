@@ -4,7 +4,7 @@ export class StringUtil {
      * @param {String} string
      * @returns
      */
-    static true_len(string) {
+    static true_length(string) {
         return string.replace(
             /[[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/gim,
             "",
@@ -18,7 +18,7 @@ export class StringUtil {
      * @returns
      */
     static truncate(message, length) {
-        let len = this.true_len(message);
+        let len = this.true_length(message);
         /**
          * @type {String}
          */
@@ -38,9 +38,9 @@ export class StringUtil {
      * @param {string} mode
      * @returns
      */
-    static fillLine(message, length, mode = "left") {
+    static fill_line(message, length, mode = "left") {
         message = this.truncate(message, length);
-        let len = this.true_len(message);
+        let len = this.true_length(message);
         if (len < length) {
             let rspacing = length - len;
             let lspacing = 0;

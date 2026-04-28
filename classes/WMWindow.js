@@ -141,7 +141,7 @@ export class WMWindow extends WMElement {
                 ? COLORS.BgWhite
                 : COLORS.BgDarkGrey;
             if (line_index == 0) {
-                let message = StringUtil.fillLine(this.title, this.w - 4);
+                let message = StringUtil.fill_line(this.title, this.w - 4);
                 process.stdout.write(
                     `${title_color}${COLORS.FgCyan}  ${message}  ${COLORS.Reset}`,
                 );
@@ -152,7 +152,7 @@ export class WMWindow extends WMElement {
                     `${bd_color}${out.join("")}${COLORS.Reset}`,
                 );
             } else if (line_index < this.h) {
-                let message = StringUtil.fillLine("", this.w - 4);
+                let message = StringUtil.fill_line("", this.w - 4);
                 process.stdout.write(
                     `${bd_color}${this.borders.left}${COLORS.Reset} ${message} ${bd_color}${this.borders.right}${COLORS.Reset}`,
                 );

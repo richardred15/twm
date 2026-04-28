@@ -48,9 +48,10 @@ export class WindowManager extends WMElement {
         // you must enable the mouse events before they will begin firing
         keypress.enableMouse(process.stdout);
 
-        process.stdin.on("keypress", function (ch, key) {
-            if (key) {
-                if (!key.meta) {
+        process.stdin.on("keypress", (...args) => {
+            this.fire_event("keypress", ...args);
+            if (args[1]) {
+                if (!args[1].meta) {
                 }
             }
         });
@@ -67,6 +68,7 @@ export class WindowManager extends WMElement {
 
         process.stdout.on("resize", () => {
             this.render();
+            this.fire_event("resize");
         });
 
         process.on("exit", () => {
