@@ -22,23 +22,23 @@ import {
 /**
  * @type {ConsoleWindow}
  */
-let status_console;
+let status_window;
 /**
  * @type {ConsoleWindow}
  */
-let conf_console;
+let config_window;
 /**
  * @type {ConsoleWindow}
  */
-let log_console;
+let log_window;
 /**
  * @type {ConsoleWindow}
  */
-let chat_info_console;
+let chat_info_window;
 /**
  * @type {ConsoleWindow}
  */
-let cmd_console;
+let command_window;
 /**
  * @type {ControlStrip}
  */
@@ -53,33 +53,39 @@ const window_manager = new WindowManager();
 
 function setup_consoles() {
     console.clear();
-    status_console = window_manager.createConsole(
+    status_window = window_manager.createConsole(
         " Server Status",
         60,
         10,
         0,
         0,
     );
-    conf_console = window_manager.createConsole("AI Config", 40, 16, 61, 0);
-    log_console = window_manager.createConsole("Chat Log", 60, 29, 0, 11);
-    log_console.z_index = 2;
-    chat_info_console = window_manager.createConsole(
+    config_window = window_manager.createConsole("AI Config", 40, 16, 61, 0);
+    log_window = window_manager.createConsole("Chat Log", 60, 29, 0, 11);
+    log_window.z_index = 2;
+    chat_info_window = window_manager.createConsole(
         "User Information",
         40,
         23,
         61,
         17,
     );
-    cmd_console = window_manager.createConsole("Command Output", 99, 3, 1, 46);
-    cmd_console.setBorders(BORDERS.bold);
+    command_window = window_manager.createConsole(
+        "Command Output",
+        99,
+        3,
+        1,
+        46,
+    );
+    command_window.setBorders(BORDERS.bold);
     //witai.setLogger(cmd_con);
     control_strip = window_manager.createControlStrip("Controls", 99, 4, 1, 41);
     control_strip.addButton("Clear", 3, 0, 9, 2, () => {
-        log_console.clear();
+        log_window.clear();
     });
     control_strip.addButton("L_Mode", 14, 0, 10, 2, () => {});
     control_strip.addButton("Goober", 26, 0, 12, 2, () => {
-        status_console.log("GOOBER");
+        status_window.log("GOOBER");
     });
     control_strip.addButton("Speak", 40, 0, 12, 2, () => {});
     control_strip.addButton("Latest", 54, 0, 12, 2, () => {});
@@ -93,12 +99,15 @@ function setup_consoles() {
  */
 window_manager
     .on("line", (/** @type {string} */ line) => {
-        log_console.log(line);
-        cmd_console.log("Unknown Command");
+        log_window.log(line);
+        command_window.log("Unknown Command");
         if (line.startsWith("exit")) {
             process.exit(0);
         }
     })
+    /**
+     * When WM is in control, this event will help you with any needed cleanup, fired after process.exit is fired
+     */
     .on("exit", () => {
         console.clear();
         console.log("Have a great day!");
@@ -118,5 +127,5 @@ setTimeout(() => {
      * @type {string}
      */
     let str = `WM loaded!`;
-    status_console.log(str);
+    status_window.log(str);
 }, 1000);
