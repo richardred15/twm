@@ -28,9 +28,6 @@ export class WindowManager extends WMElement {
         if (control_input) {
             this.setup_environment();
             console.clear();
-            /* console.log = (...args) => {
-                this.fire("line", ...args);
-            }; */
         }
     }
 
@@ -42,7 +39,8 @@ export class WindowManager extends WMElement {
         });
 
         this.rl.on("line", (string) => {
-            this.fire("line", string);
+            this.fire_event("line", string);
+            this.render();
         });
 
         // make `process.stdin` begin emitting "mousepress" (and "keypress") events
@@ -75,7 +73,7 @@ export class WindowManager extends WMElement {
             // disable mouse on exit, so that the state
             // is back to normal for the terminal
             keypress.disableMouse(process.stdout);
-            this.fire("exit");
+            this.fire_event("exit");
         });
     }
 
@@ -84,7 +82,7 @@ export class WindowManager extends WMElement {
      * @param {string} event
      * @param  {...any} args
      */
-    fire(event, ...args) {
+    fire_event(event, ...args) {
         if (this.listeners[event]) {
             for (let callback of this.listeners[event]) {
                 callback(...args);
