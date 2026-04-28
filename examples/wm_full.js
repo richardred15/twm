@@ -76,7 +76,6 @@ function setup_consoles() {
     //witai.setLogger(cmd_con);
     control_strip = window_manager.createControlStrip("Controls", 99, 4, 1, 41);
     control_strip.addButton("Clear", 3, 0, 9, 2, () => {
-        chat_info_console.clear();
         log_console.clear();
     });
     control_strip.addButton("L_Mode", 14, 0, 10, 2, () => {});
