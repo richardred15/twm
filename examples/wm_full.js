@@ -35,6 +35,7 @@ let control_strip;
 
 /**
  * TWM will handle console I/O
+ * new WindowManager(true) to handle it yourself
  * @type {WindowManager}
  */
 const window_manager = new WindowManager();
