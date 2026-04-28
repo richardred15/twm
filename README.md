@@ -19,7 +19,6 @@ Only import what you need
 import { WindowManager } from "twm"; - This will do what you need most of the time
 
 CommonJS:
-
 const {
     WindowManager,
     COLORS,
