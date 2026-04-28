@@ -66,6 +66,10 @@ export class WindowManager extends WMElement {
             }
         });
 
+        process.stdout.on("resize", () => {
+            this.render();
+        });
+
         process.on("exit", () => {
             // disable mouse on exit, so that the state
             // is back to normal for the terminal

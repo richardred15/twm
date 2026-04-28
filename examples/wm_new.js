@@ -1,6 +1,5 @@
 import { WindowManager, COLORS, BORDERS, ConsoleWindow } from "../index.js";
 
-let do_render = true;
 /**
  * @type {ConsoleWindow}
  */
@@ -21,6 +20,9 @@ let cmd_console;
 let control_strip;
 const FPS = 1;
 
+/**
+ * TWM will handle console I/O
+ */
 const window_manager = new WindowManager();
 
 function initConsoles() {
@@ -61,13 +63,6 @@ function initConsoles() {
     control_strip.addButton("🎲", 88, 0, 6, 2, () => {});
 }
 
-function c_render() {
-    window_manager.render();
-    if (do_render) {
-        setTimeout(c_render, 1000 / FPS);
-    }
-}
-
 window_manager
     .on("line", (/** @type {string} */ line) => {
         log_console.log(line);
@@ -77,8 +72,7 @@ window_manager
     });
 
 initConsoles();
-
-setTimeout(c_render, 1000 / FPS);
+window_manager.render();
 
 setTimeout(() => {
     let str = `WM loaded!`;

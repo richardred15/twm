@@ -29,7 +29,10 @@ let rl = readline.createInterface({
     terminal: true,
 });
 
-const window_manager = new WindowManager();
+/**
+ * We'll be handling our own console I/O
+ */
+const window_manager = new WindowManager(false);
 
 function initConsoles() {
     status_console = window_manager.createConsole(
