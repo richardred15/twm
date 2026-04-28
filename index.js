@@ -7,6 +7,7 @@ export { ConsoleWindow } from "./classes/ConsoleWindow.js";
 import { ControlStrip } from "./classes/ControlStrip.js";
 export { ControlStrip } from "./classes/ControlStrip.js";
 import { WMElement } from "./classes/WMElement.js";
+export { Color } from "./classes/Color.js";
 
 export class WindowManager extends WMElement {
     /**

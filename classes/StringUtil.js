@@ -5,10 +5,7 @@ export class StringUtil {
      * @returns
      */
     static true_length(string) {
-        return string.replace(
-            /[[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/gim,
-            "",
-        ).length;
+        return string.replace(/\x1b\[[0-9;]*m/g, "").length;
     }
 
     /**
@@ -19,10 +16,11 @@ export class StringUtil {
      */
     static truncate(message, length) {
         let len = this.true_length(message);
+        let diff = message.length - len;
         /**
          * @type {String}
          */
-        let out = message.slice(0, length);
+        let out = message.slice(0, length + diff);
         if (len > length) {
             out = out.slice(0, -3) + `...`;
         }

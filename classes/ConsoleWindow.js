@@ -52,6 +52,14 @@ export class ConsoleWindow extends WMWindow {
 
     /**
      *
+     * @param {string} message
+     */
+    error(message) {
+        this.log(message);
+    }
+
+    /**
+     *
      * @param {number} direction
      */
     scroll(direction) {
