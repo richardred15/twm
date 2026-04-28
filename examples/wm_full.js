@@ -40,7 +40,7 @@ let control_strip;
  */
 const window_manager = new WindowManager();
 
-function initConsoles() {
+function setup_consoles() {
     console.clear();
     status_console = window_manager.createConsole(
         " Server Status",
@@ -78,6 +78,9 @@ function initConsoles() {
     control_strip.addButton("🎲", 88, 0, 6, 2, () => {});
 }
 
+/**
+ * When WM is handling input it will fire an event when the user submits a line of text (a command)
+ */
 window_manager
     .on("line", (/** @type {string} */ line) => {
         log_console.log(line);
@@ -90,9 +93,15 @@ window_manager
         process.exit(0);
     });
 
-initConsoles();
+setup_consoles();
+/**
+ * Initial render call, this isn't strictly neccesary as any .log call or adjustment to a console will force a render
+ */
 window_manager.render();
 
+/**
+ * Log something random
+ */
 setTimeout(() => {
     /**
      * @type {string}
