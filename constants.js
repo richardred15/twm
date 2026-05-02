@@ -38,12 +38,16 @@ export const BORDERS = {
         bottom: "▔",
         left: "▏",
         right: "▕",
+        scroll_bar: "▐",
+        scroll_bar_track: "🮍",
     },
     bold: {
         top: "█",
         bottom: "▀",
         left: "█",
         right: "█",
+        scroll_bar: "▐",
+        scroll_bar_track: "🮍",
     },
     button: {
         top: "▁",

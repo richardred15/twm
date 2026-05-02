@@ -38,6 +38,7 @@ export class ControlStrip extends WMWindow {
         );
         button.parent = this;
         this.buttons.push(button);
+        return button;
     }
 
     /**

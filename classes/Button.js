@@ -3,6 +3,7 @@ import { StringUtil } from "../classes/StringUtil.js";
 import { WMElement } from "./WMElement.js";
 
 export class Button extends WMElement {
+    _text = "";
     /**
      *
      * @param {string} text
@@ -21,7 +22,19 @@ export class Button extends WMElement {
         this.w = width;
         this.h = height;
         this.onclick = onclick;
-        this.text = text;
+        this._text = text;
+    }
+
+    /**
+     * @param {string} string
+     */
+    set text(string) {
+        this._text = string;
+        this.markDirty();
+    }
+
+    get text() {
+        return this._text;
     }
 
     /**
@@ -56,7 +69,7 @@ export class Button extends WMElement {
                 process.stdout.write(out.join(""));
             } else if (line_index < this.h) {
                 let message = StringUtil.fill_line(
-                    this.text,
+                    this._text,
                     this.w - 4,
                     "center",
                 );

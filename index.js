@@ -18,11 +18,13 @@ export class WindowManager extends WMElement {
      * @type {readline.Interface|null}
      */
     rl = null;
+    rl_closed = false;
     /**
      * @type {Object<string, Function[]>}
      */
     listeners = {};
     control_input = true;
+    mouse_regex = /\x1b\[<(\d+);(\d+);(\d+)([mM])/;
     constructor(control_input = true) {
         super();
         this.control_input = control_input;
@@ -40,23 +42,71 @@ export class WindowManager extends WMElement {
         });
 
         this.rl.on("line", (string) => {
-            this.fire_event("line", string);
+            this.emit("line", string);
             this.render();
         });
 
+        this.rl.on("close", () => {
+            this.rl_closed = true;
+        });
+
         keypress(process.stdin);
-        keypress.enableMouse(process.stdout);
+        process.stdout.write("\x1b[?1000h");
+        process.stdout.write("\x1b[?1003h");
+        process.stdout.write("\x1b[?1006h");
 
         process.stdin.on("keypress", (...args) => {
-            this.fire_event("keypress", ...args);
+            this.emit("keypress", ...args);
             if (args[1]) {
                 if (!args[1].meta) {
                 }
             }
         });
 
+        process.stdin.on("data", (data) => {
+            const data_string = data.toString();
+            const match = this.mouse_regex.exec(data_string);
+
+            if (match) {
+                let event_data = {
+                    name: "mouse",
+                    ctrl: false,
+                    meta: false,
+                    shift: false,
+                    sequence: data_string,
+                    code: "",
+                    x: 0,
+                    y: 0,
+                    scroll: 0,
+                    release: false,
+                    button: 0,
+                };
+                if (!match) return;
+
+                const cb = Number(match[1]);
+
+                event_data.x = Number(match[2]);
+                event_data.y = Number(match[3]);
+
+                event_data.shift = !!(cb & 4);
+                event_data.meta = !!(cb & 8);
+                event_data.ctrl = !!(cb & 16);
+
+                event_data.button = cb & 3;
+                if (cb & 64) {
+                    event_data.scroll = cb & 1 ? 1 : -1;
+                }
+                event_data.release = match[4] === "m";
+                const isMotion = (cb & 32) !== 0;
+                if (!isMotion) process.stdin.emit("mousepress", event_data);
+                else {
+                    process.stdin.emit("mousemove", event_data);
+                }
+            }
+        });
+
         process.stdin.on("mousepress", (info) => {
-            this.fire_event("mousepress", info);
+            this.emit("mousepress", info);
             if (info.scroll == 0) {
                 if (!info.release) {
                     this.click(info.x, info.y);
@@ -68,14 +118,17 @@ export class WindowManager extends WMElement {
 
         process.stdout.on("resize", () => {
             this.render();
-            this.fire_event("resize");
+            this.emit("resize");
         });
 
         process.on("exit", () => {
-            // disable mouse on exit, so that the state
-            // is back to normal for the terminal
+            // disable mouse on exit, so that the state is back to normal for the terminal
             keypress.disableMouse(process.stdout);
-            this.fire_event("exit");
+            process.stdout.write("\x1b[?1002l");
+            process.stdout.write("\x1b[?1003l");
+            process.stdout.write("\x1b[?1005l");
+            process.stdout.write("\x1b[?1006l");
+            this.emit("exit");
         });
     }
 
@@ -84,7 +137,7 @@ export class WindowManager extends WMElement {
      * @param {string} event
      * @param  {...any} args
      */
-    fire_event(event, ...args) {
+    emit(event, ...args) {
         if (this.listeners[event]) {
             for (let callback of this.listeners[event]) {
                 callback(...args);
@@ -151,18 +204,38 @@ export class WindowManager extends WMElement {
      * @param {number} x
      * @param {number} y
      */
-    click(x, y) {
+    move(x, y) {
         this.windows = this.windows.sort((a, b) => a.z_index - b.z_index);
-        for (let wind of this.windows) {
-            wind.selected = false;
-            if (wind.pos.x + wind.w >= x && wind.pos.x <= x) {
-                if (wind.pos.y + wind.h >= y && wind.pos.y <= y) {
-                    wind.click(x - wind.pos.x - 1, y - wind.pos.y - 2);
-                    wind.selected = true;
+        for (let window of this.windows) {
+            window.selected = false;
+            if (x <= window.pos.x + window.w && x > window.pos.x) {
+                if (y <= window.pos.y + window.h && y > window.pos.y) {
+                    window.selected = true;
+                    window.move(x - window.pos.x - 1, y - window.pos.y - 2);
                 }
             }
         }
-        this.fire_event("click", x, y);
+        this.emit("move", x, y);
+        this.render();
+    }
+
+    /**
+     *
+     * @param {number} x
+     * @param {number} y
+     */
+    click(x, y) {
+        this.windows = this.windows.sort((a, b) => a.z_index - b.z_index);
+        for (let window of this.windows) {
+            window.selected = false;
+            if (x <= window.pos.x + window.w && x > window.pos.x) {
+                if (y <= window.pos.y + window.h && y > window.pos.y) {
+                    window.selected = true;
+                    window.click(x - window.pos.x - 1, y - window.pos.y - 2);
+                }
+            }
+        }
+        this.emit("click", x, y);
         this.render();
     }
 
@@ -178,8 +251,8 @@ export class WindowManager extends WMElement {
             window.selected = false;
             if (window.pos.x + window.w >= x && window.pos.x <= x) {
                 if (window.pos.y + window.h >= y && window.pos.y <= y) {
-                    window.scroll(direction);
                     window.selected = true;
+                    window.scroll(direction);
                 }
             }
         }
@@ -188,8 +261,9 @@ export class WindowManager extends WMElement {
 
     render() {
         super.render();
+
         let cursor_position;
-        if (this.rl) {
+        if (this.rl && !this.rl_closed) {
             this.rl.pause();
             cursor_position = this.rl.getCursorPos();
         }
@@ -208,7 +282,7 @@ export class WindowManager extends WMElement {
                 con.render(l);
             }
         }
-        if (this.rl) {
+        if (this.rl && !this.rl_closed) {
             process.stdout.cursorTo(0, window_size.w);
             process.stdout.write("> ");
             if (cursor_position)

@@ -1,6 +1,7 @@
 import util from "util";
 import { StringUtil } from "./StringUtil.js";
 import { WMWindow } from "./WMWindow.js";
+import { COLORS } from "../constants.js";
 
 export class ConsoleWindow extends WMWindow {
     /**
@@ -31,12 +32,27 @@ export class ConsoleWindow extends WMWindow {
 
     /**
      *
-     * @param {String} message
+     * @param {any} message
      */
     log(message) {
         clearTimeout(this.render_timeout);
         if (typeof message == "string") {
-            this.messages.push(message);
+            let lines = message.split("\n");
+            let previous_color = "";
+            for (let line of lines) {
+                line = line.replaceAll("\t", "   ");
+                let colors = line.match(/\x1b\[[0-9;]*m/g);
+                if (colors != null) {
+                    let color = colors.slice(-1)[0];
+                    if (color == COLORS.Reset) {
+                        previous_color = "";
+                    } else {
+                        previous_color = color;
+                    }
+                }
+                this.messages.push(previous_color + line);
+                if (this.scroll_offset > 0) this.scroll_offset++;
+            }
         } else {
             message = util.inspect(message, {
                 showHidden: false,
@@ -44,8 +60,11 @@ export class ConsoleWindow extends WMWindow {
                 colors: true,
                 breakLength: this.w - 4,
             });
-            let lines = message.split("\n");
+            let lines = message.split("\n").map((/** @type {any} */ line) => {
+                return line.replaceAll("\t", "   ");
+            });
             this.messages = this.messages.concat(...lines);
+            if (this.scroll_offset > 0) this.scroll_offset += lines.length;
         }
         this.markDirty();
     }
@@ -107,7 +126,39 @@ export class ConsoleWindow extends WMWindow {
                 } else {
                     message = StringUtil.fill_line(message, this.w - 4);
                 }
-                process.stdout.write(` ${message}`);
+                let inner_height = this.h - 1;
+                let scroll_bar = "";
+
+                if (this.messages.length > inner_height) {
+                    let bar_height = Math.max(
+                        1,
+                        Math.floor(
+                            (inner_height / this.messages.length) *
+                                inner_height,
+                        ),
+                    );
+                    let max_scroll_offset = Math.max(
+                        0,
+                        this.messages.length - inner_height,
+                    );
+                    let scroll_offset_ratio =
+                        this.scroll_offset / max_scroll_offset;
+                    let bar_pos = this.h - bar_height;
+                    let scroll_offset = Math.floor(
+                        (inner_height - bar_height) * scroll_offset_ratio,
+                    );
+                    bar_pos -= scroll_offset;
+                    let scroll_bar_color = this.selected
+                        ? COLORS.FgWhite
+                        : COLORS.FgVeryDarkGrey;
+                    scroll_bar = `${scroll_bar_color} ${this.borders.scroll_bar_track}`;
+                    if (
+                        line_index >= bar_pos &&
+                        line_index < bar_pos + bar_height
+                    )
+                        scroll_bar = `${scroll_bar_color} ${this.borders.scroll_bar}`;
+                }
+                process.stdout.write(` ${message}${scroll_bar}`);
             }
             this.renderSpinners(line_index);
         }

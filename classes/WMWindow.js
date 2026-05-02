@@ -100,6 +100,13 @@ export class WMWindow extends WMElement {
 
     /**
      *
+     * @param {number} x
+     * @param {number} y
+     */
+    move(x, y) {}
+
+    /**
+     *
      * @param {Object} data
      */
     onclick(data) {}
@@ -143,7 +150,7 @@ export class WMWindow extends WMElement {
             if (line_index == 0) {
                 let message = StringUtil.fill_line(this.title, this.w - 4);
                 process.stdout.write(
-                    `${title_color}${COLORS.FgCyan}  ${message}  ${COLORS.Reset}`,
+                    `${title_color}${this.selected ? COLORS.FgBlue : COLORS.FgCyan}  ${message}  ${COLORS.Reset}`,
                 );
             } else if (line_index == this.h) {
                 let out = new Array(this.w);
